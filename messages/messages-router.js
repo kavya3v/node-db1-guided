@@ -20,13 +20,15 @@ router.get("/:id", async (req, res, next) => {
 try {
     //select statments always return array of rows so result will be an array with just one object here
     //we can destructure and send just the obj instead!
-    //but have as array as when id not found needs to be empty array or handle it if destructured as array.
-    const message= await db.select("*")
+    //but have as array as when id not found needs to be empty array or handle it if destructured as array. Coz it wl be undefined if array length 0
+    const [message]= await db.select("*")
                            .from("messages")
                            .where("id",req.params.id)
                            .limit(1);
-    
-     res.json(message);
+    if(message){
+        res.json(message);
+    }else res.status(200).json({message: "id not found"})
+     
 } catch (err) {
     next(err)
 }
